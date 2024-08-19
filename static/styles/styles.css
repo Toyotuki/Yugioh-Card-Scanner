@@ -1,0 +1,54 @@
+#videoContainer {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    height: 0;
+    padding-bottom: 135%;
+    overflow: hidden;
+    background: rgb(255, 255, 255);
+}
+#video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+#overlay {
+    position: absolute;
+    top: 17%;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: red;
+    z-index: 10;
+}
+#captureButton {
+    padding: 15px 30px;
+    font-size: 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    z-index: 20;
+    display: block;
+    margin: 5px auto;
+    text-align: center;
+}
+#captureButton:hover {
+    background-color: #45a049;
+}
+#loading {
+    display: none;
+    font-size: 20px;
+    color: red;
+    text-align: center;
+    margin: 20px auto;
+}
+#result {
+    font-size: 20px;
+    color: black;
+    text-align: center;
+    margin: 20px auto;
+}
