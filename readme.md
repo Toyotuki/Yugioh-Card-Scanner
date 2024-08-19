@@ -84,9 +84,9 @@ Make sure you have Python installed. You will also need to install the required 
 
 ## Screenshots
 
-- **erminal interface** 
+- **Terminal interface** 
 
-   ![erminal interface](example1.png)
+   ![Terminal interface](example1.png)
 
 - **Mobile interface** 
 
