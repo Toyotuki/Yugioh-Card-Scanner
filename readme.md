@@ -84,13 +84,13 @@ Make sure you have Python installed. You will also need to install the required 
 
 ## Screenshots
 
+- **erminal interface** 
+
+   ![erminal interface](example1.png)
+
 - **Mobile interface** 
 
-   ![Mobile interface](example1.png)
-
-- **Terminal interface** 
-
-   ![Terminal interface](example2.png)
+   ![Mobile interface](example2.png)
 
 ## License
 
