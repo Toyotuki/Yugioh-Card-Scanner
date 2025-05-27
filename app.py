@@ -11,6 +11,8 @@ import easyocr
 from fuzzywuzzy import process
 from colorama import Fore, Style, init
 
+import ssl
+
 app = Flask(__name__)
 
 init(autoreset=True)
@@ -153,4 +155,16 @@ def upload_image():
 
 if __name__ == '__main__':
     display_initialization_message()
-    app.run(host='0.0.0.0')
+
+    #insert AI Code
+    # 生成自簽名證書（如果還沒有的話）
+    if not os.path.exists('cert.pem') or not os.path.exists('key.pem'):
+        print(f"{Fore.YELLOW}生成自簽名SSL證書...")
+        os.system('openssl req -x509 -newkey rsa:4096 -nodes -out cert.pem -keyout key.pem -days 365 -subj "/CN=localhost"')
+    
+    print(f"{Fore.CYAN}Web server starting at https://localhost:5000")
+    print(f"{Fore.YELLOW}Open this URL in your browser to use the card scanner")
+    print(f"{Fore.RED}注意：由於使用自簽名證書，瀏覽器會顯示安全警告，請點擊「繼續訪問」")
+    
+    app.run(host='0.0.0.0', port=5000, ssl_context=('cert.pem', 'key.pem'), debug=True)
+    #app.run(host='0.0.0.0')

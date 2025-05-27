@@ -1,22 +1,143 @@
 <!DOCTYPE html>
-<html lang="lv">
+<html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <title>Yu-Gi-Oh Card Scanner</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/styles.css') }}">
+    <style>
+        body {
+            margin: 0;
+            padding: 10px;
+            font-family: Arial, sans-serif;
+        }
+        #videoContainer {
+            margin: 0 auto;
+            border: 2px solid #333;
+            border-radius: 5px;
+        }
+        .error-message {
+            color: red;
+            font-weight: bold;
+            text-align: center;
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #ffeeee;
+            border-radius: 5px;
+            border: 1px solid #ffcccc;
+        }
+        #troubleshooting {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        #troubleshooting h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        #troubleshooting ul {
+            padding-left: 20px;
+        }
+        #debugInfo {
+            background-color: #f0f0f0;
+            padding: 10px;
+            margin-top: 20px;
+            border-radius: 5px;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
+        }
+        .debug-toggle {
+            font-size: 12px;
+            color: #666;
+            text-decoration: underline;
+            cursor: pointer;
+            display: block;
+            text-align: center;
+            margin: 5px 0;
+        }
+    </style>
 </head>
 <body>
+    <h1 style="text-align: center;">Yu-Gi-Oh 卡片掃描器</h1>
+    
     <div id="videoContainer">
         <video id="video" autoplay playsinline></video>
         <div id="overlay"></div>
     </div>
+    
     <canvas id="canvas" style="display:none;"></canvas>
-    <br>
-    <button id="captureButton">Take a photo</button>
-    <div id="loading">Processing...</div>
+    
+    <p class="error-message" id="cameraError" style="display:none;">
+        無法訪問相機。請確保你已授權網站使用相機，並重新整理頁面。
+    </p>
+    
+    <div style="text-align: center; margin-top: 15px;">
+        <button id="captureButton">拍照識別</button>
+    </div>
+    
+    <div id="loading">處理中...</div>
     <div id="result"></div>
+    
+    <div id="troubleshooting">
+        <h3>如果相機無法顯示，請嘗試：</h3>
+        <ul>
+            <li>使用Chrome或Firefox的最新版本</li>
+            <li>確保已授予網站相機權限（點擊地址欄中的相機圖標）</li>
+            <li>通過 <a href="http://localhost:5000">localhost:5000</a> 而非IP地址訪問</li>
+            <li>確保使用HTTP而非HTTPS (除非已配置SSL證書)</li>
+            <li>如果使用移動設備，嘗試使用Chrome瀏覽器訪問</li>
+        </ul>
+    </div>
+    
+    <a class="debug-toggle" onclick="toggleDebug()">顯示/隱藏調試信息</a>
+    <div id="debugInfo">
+        <h3>調試信息：</h3>
+        <div id="browserInfo"></div>
+        <div id="debugOutput"></div>
+    </div>
+    
+    <script>
+        // 顯示瀏覽器信息
+        document.getElementById('browserInfo').innerHTML = 
+            '<p>用戶代理: ' + navigator.userAgent + '</p>' +
+            '<p>瀏覽器支持mediaDevices: ' + (!!navigator.mediaDevices) + '</p>' +
+            '<p>協議: ' + window.location.protocol + '</p>' +
+            '<p>主機: ' + window.location.host + '</p>';
 
+        function toggleDebug() {
+            const debugInfo = document.getElementById('debugInfo');
+            debugInfo.style.display = debugInfo.style.display === 'none' ? 'block' : 'none';
+        }
+        
+        // 簡單的調試功能
+        function debug(message) {
+            console.log(message);
+            const debugOutput = document.getElementById('debugOutput');
+            if (debugOutput) {
+                const timestamp = new Date().toLocaleTimeString();
+                debugOutput.innerHTML += `<p>${timestamp}: ${message}</p>`;
+            }
+        }
+        
+        // 檢查相機支持
+        window.addEventListener('load', function() {
+            debug('頁面載入完成');
+            
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                debug('瀏覽器不支持 getUserMedia API');
+                document.getElementById('cameraError').style.display = 'block';
+                document.getElementById('cameraError').textContent = 
+                    '你的瀏覽器不支持相機功能。請使用最新版本的Chrome、Firefox或通過localhost訪問。';
+            } else {
+                debug('瀏覽器支持相機API');
+            }
+        });
+    </script>
+    
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>
