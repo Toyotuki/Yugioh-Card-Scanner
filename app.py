@@ -117,10 +117,11 @@ def upload_image():
         if best_match[1] < 90:
             clear_console()
             print(ascii_art)
+            print(ocr_text)
             print(f"{Fore.RED}{Style.BRIGHT}Error: Card not recognized with sufficient accuracy. Match Percentage: {best_match[1]}%")
             return jsonify({'error': 'Card not recognized with sufficient accuracy.'}), 400
         
-        response = {
+        response_console = {
             'OCR Result': ocr_text,
             'Fuzzy Search': {
                 'Best Match': best_match[0],
@@ -144,10 +145,32 @@ def upload_image():
             },
             'Processing Time': f"{elapsed_time:.4f}"
         }
+
+        response_clint = {
+            '名稱': {
+                '名稱': best_match[0],
+            },
+            '內容': {
+                'ID': card_info['id'],
+                '屬性': card_info['type'],
+                '種族': card_info['race'],
+                'ATK': card_info['atk'] if card_info['atk'] else '',
+                'DEF': card_info['def'] if card_info['def'] else '',
+                'Level': card_info['level'] if card_info['level'] else '',
+                '價格': {
+                    'cardmarket_price': card_info['prices']['cardmarket_price'],
+                    'tcgplayer_price': card_info['prices']['tcgplayer_price'],
+                    'ebay_price': card_info['prices']['ebay_price'],
+                    'amazon_price': card_info['prices']['amazon_price'],
+                    'coolstuffinc_price': card_info['prices']['coolstuffinc_price']
+                },
+                'URL': card_info['url']
+            }
+        }
         
-        display_card_info(response)
+        display_card_info(response_console)
         
-        return jsonify(response)
+        return jsonify(response_clint)
     except Exception as e:
         clear_console()
         print(f"{Fore.RED}{Style.BRIGHT}Error: {str(e)}")
